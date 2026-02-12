@@ -11,7 +11,11 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "node": "20.18.1",
+      "env": {
+        "EXPO_USE_METRO_WORKSPACE_ROOT": "1"
+      }
     },
     "production": {
       "ios": {
@@ -19,6 +23,10 @@
       },
       "android": {
         "distribution": "store"
+      },
+      "node": "20.18.1",
+      "env": {
+        "EXPO_USE_METRO_WORKSPACE_ROOT": "1"
       }
     }
   },
