@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 16.17.4"
+    "version": ">= 16.17.4",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
@@ -16,6 +17,9 @@
     },
     "preview": {
       "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
       "node": "20.18.1",
       "env": {
         "EXPO_USE_METRO_WORKSPACE_ROOT": "1"
@@ -38,6 +42,10 @@
     "production": {
       "ios": {
         "ascAppId": "6758531048"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "internal"
       }
     }
   }
