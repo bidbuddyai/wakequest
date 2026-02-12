@@ -161,7 +161,14 @@
   "private": true,
   "overrides": {
     "react-native-css-interop": "0.1.22",
-    "react-native-reanimated": "3.17.4"
+    "react-native-reanimated": "3.17.4",
+    "victory-native": {
+      "@shopify/react-native-skia": "$@shopify/react-native-skia"
+    },
+    "framer-motion": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   },
   "patchedDependencies": {
     "react-native@0.79.6": "patches/react-native@0.79.6.patch",
