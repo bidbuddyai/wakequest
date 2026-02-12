@@ -1,0 +1,83 @@
+name: Build Android
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Build profile (preview or production)'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - production
+
+jobs:
+  build:
+    name: Build Android App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mobile
+    
+    steps:
+      - name: 📦 Check out repository
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: 🏗️ Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🚀 Build Android (Preview APK)
+        if: github.event_name != 'workflow_dispatch' || github.event.inputs.profile == 'preview'
+        env:
+          EXPO_PUBLIC_VIBECODE_OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEV_BACKUP_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DEV_BACKUP_ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_REVENUECAT_GOOGLE_KEY: ${{ secrets.REVENUECAT_GOOGLE_KEY }}
+          EXPO_PUBLIC_VIBECODE_REVENUECAT_TEST_KEY: ${{ secrets.REVENUECAT_TEST_KEY }}
+          EXPO_PUBLIC_VIBECODE_REVENUECAT_APPLE_KEY: ${{ secrets.REVENUECAT_APPLE_KEY }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          EXPO_PUBLIC_BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          EXPO_PUBLIC_VIBECODE_BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        run: eas build --platform android --profile preview --non-interactive
+
+      - name: 🚀 Build Android (Production AAB)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.profile == 'production'
+        env:
+          EXPO_PUBLIC_VIBECODE_OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEV_BACKUP_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DEV_BACKUP_ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
+          EXPO_PUBLIC_VIBECODE_REVENUECAT_GOOGLE_KEY: ${{ secrets.REVENUECAT_GOOGLE_KEY }}
+          EXPO_PUBLIC_VIBECODE_REVENUECAT_TEST_KEY: ${{ secrets.REVENUECAT_TEST_KEY }}
+          EXPO_PUBLIC_VIBECODE_REVENUECAT_APPLE_KEY: ${{ secrets.REVENUECAT_APPLE_KEY }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          EXPO_PUBLIC_BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          EXPO_PUBLIC_VIBECODE_BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        run: eas build --platform android --profile production --non-interactive

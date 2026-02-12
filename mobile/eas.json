@@ -14,22 +14,6 @@
       "distribution": "internal"
     },
     "production": {
-      "env": {
-        "EXPO_PUBLIC_VIBECODE_OPENWEATHER_API_KEY": "your-openweather-api-key-here",
-        "EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY": "your-openai-api-key-here",
-        "BACKEND_URL": "your-backend-url-here",
-        "EXPO_PUBLIC_VIBECODE_BACKEND_URL": "your-backend-url-here",
-        "DEV_BACKUP_ANTHROPIC_API_KEY": "your-anthropic-api-key-here",
-        "EXPO_PUBLIC_VIBECODE_GOOGLE_API_KEY": "your-google-api-key-here",
-        "EXPO_PUBLIC_VIBECODE_REVENUECAT_GOOGLE_KEY": "your-revenuecat-google-key-here",
-        "EXPO_PUBLIC_VIBECODE_REVENUECAT_TEST_KEY": "your-revenuecat-test-key-here",
-        "EXPO_PUBLIC_VIBECODE_REVENUECAT_APPLE_KEY": "your-revenuecat-apple-key-here",
-        "EXPO_PUBLIC_BACKEND_URL": "your-backend-url-here",
-        "EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY": "your-elevenlabs-api-key-here",
-        "DEV_BACKUP_OPENAI_API_KEY": "your-openai-api-key-here",
-        "EXPO_PUBLIC_VIBECODE_ANTHROPIC_API_KEY": "your-anthropic-api-key-here",
-        "EXPO_PUBLIC_VIBECODE_GROK_API_KEY": "your-grok-api-key-here"
-      },
       "ios": {
         "distribution": "store"
       },
