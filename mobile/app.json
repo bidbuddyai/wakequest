@@ -50,6 +50,12 @@
     "experiments": {
       "typedRoutes": true
     },
-    "icon": "./icon.png"
+    "icon": "./icon.png",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8abaee48-5cdf-4e5f-bd5b-d50607f37de7"
+      }
+    }
   }
 }
