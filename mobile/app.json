@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "WakeQuest",
+    "slug": "wakequest-alarms",
+    "scheme": "vibecode",
+    "version": "1.0.2",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vibecode.wakequest.trw402",
+      "buildNumber": "3",
+      "infoPlist": {
+        "NSCameraUsageDescription": "WakeQuest uses the camera to capture new photos inside the app for your projects.",
+        "NSMicrophoneUsageDescription": "WakeQuest uses the microphone to record audio tracks that the app attaches to your creations.",
+        "NSLocationWhenInUseUsageDescription": "WakeQuest uses your location to show nearby content and services while you use the app.",
+        "NSMotionUsageDescription": "WakeQuest uses motion data to run movement-based features you enable in the app.",
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      }
+    },
+    "android": {
+      "edgeToEdgeEnabled": true
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "icon": "./icon.png"
+  }
+}
