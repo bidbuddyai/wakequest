@@ -15,7 +15,6 @@
     "@bottom-tabs/react-navigation": "^0.12.2",
     "@codeherence/react-native-header": "^1.0.0",
     "@expo/html-elements": "^0.13.7",
-    "@expo/metro-config": "~0.20.18",
     "@expo/metro-runtime": "~5.0.5",
     "@expo/react-native-action-sheet": "^4.1.1",
     "@expo/vector-icons": "^14.1.0",
@@ -160,6 +159,34 @@
     "typescript": "~5.8.3"
   },
   "private": true,
+  "expo": {
+    "install": {
+      "exclude": [
+        "jest",
+        "@react-navigation/bottom-tabs",
+        "@react-navigation/native",
+        "@react-navigation/native-stack",
+        "@react-navigation/drawer"
+      ]
+    },
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "expo-av",
+          "react-native-markdown-display",
+          "@babel/plugin-proposal-export-namespace-from",
+          "@bottom-tabs/react-navigation",
+          "@vibecodeapp/sdk",
+          "expo-live-photo",
+          "expo-network-addons",
+          "patch-package",
+          "pretty-format",
+          "reanimated-tab-view",
+          "uuid"
+        ]
+      }
+    }
+  },
   "overrides": {
     "react-native-css-interop": "0.1.22",
     "react-native-reanimated": "3.17.4",
