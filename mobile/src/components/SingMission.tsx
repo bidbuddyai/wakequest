@@ -1,9 +1,15 @@
-import { View, Text, Pressable, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator, ScrollView, Platform } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Mic, Music, Sparkles } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeIn, FadeOut, SlideInDown } from 'react-native-reanimated';
-import { Audio } from 'expo-av';
+
+// Conditional import for expo-av (not fully available on web)
+let Audio: any = null;
+if (Platform.OS !== 'web') {
+  const expoAv = require('expo-av');
+  Audio = expoAv.Audio;
+}
 
 interface SingMissionProps {
   onComplete: () => void;
@@ -18,12 +24,33 @@ const SONGS = [
 ];
 
 export function SingMission({ onComplete }: SingMissionProps) {
+  if (Platform.OS === 'web') {
+    return (
+      <View className="flex-1 items-center justify-center px-6 bg-gradient-to-b from-pink-900 to-purple-900">
+        <Mic size={64} color="white" />
+        <Text className="text-white text-lg mt-4">Sing Mission</Text>
+        <Text className="text-white text-2xl font-bold mt-2 mb-2 text-center">
+          Microphone recording is limited on web
+        </Text>
+        <Text className="text-white/60 text-center mb-8">
+          Please use the mobile app for singing missions
+        </Text>
+        <Pressable
+          onPress={onComplete}
+          className="bg-white px-8 py-4 rounded-full"
+        >
+          <Text className="text-pink-600 text-lg font-semibold">Skip Mission</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
   const [song, setSong] = useState(SONGS[Math.floor(Math.random() * SONGS.length)]);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [result, setResult] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const [recording, setRecording] = useState<any>(null);
   const [permissionResponse, setPermissionResponse] = useState<any>(null);
 
   useEffect(() => {

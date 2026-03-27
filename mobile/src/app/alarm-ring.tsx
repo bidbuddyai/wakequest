@@ -1,4 +1,4 @@
-import { View, Text, Pressable, AppState, BackHandler } from 'react-native';
+import { View, Text, Pressable, AppState, BackHandler, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useState, useEffect, useRef } from 'react';
 import { useAlarmStore } from '@/lib/alarm-store';
@@ -92,15 +92,17 @@ export default function AlarmRingScreen() {
     playAlarmSound();
     loadWeatherAndSpeak();
 
-    // Disable hardware back button if prevent uninstall is enabled
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (settings.preventUninstall && !missionStarted) {
-        // Must complete mission to dismiss
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-        return true; // Prevent back
-      }
-      return false; // Allow back
-    });
+    // Disable hardware back button if prevent uninstall is enabled (Android only)
+    const backHandler = Platform.OS === 'android' 
+      ? BackHandler.addEventListener('hardwareBackPress', () => {
+          if (settings.preventUninstall && !missionStarted) {
+            // Must complete mission to dismiss
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            return true; // Prevent back
+          }
+          return false; // Allow back
+        })
+      : null;
 
     // Handle volume buttons - intercept them if setting is enabled
     let volumeListener: any = null;
@@ -111,12 +113,14 @@ export default function AlarmRingScreen() {
       console.log('Volume buttons disabled for this alarm');
     }
 
-    return () => {
-      sound.current?.unloadAsync();
-      voiceSound.current?.unloadAsync();
-      setActiveAlarm(null);
-      backHandler.remove();
-    };
+     return () => {
+       sound.current?.unloadAsync();
+       voiceSound.current?.unloadAsync();
+       setActiveAlarm(null);
+       if (backHandler) {
+         backHandler.remove();
+       }
+     };
   }, []);
 
   const loadWeatherAndSpeak = async () => {

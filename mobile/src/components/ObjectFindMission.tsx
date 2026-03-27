@@ -1,9 +1,17 @@
-import { View, Text, Pressable, Image, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, Image, ActivityIndicator, Platform } from 'react-native';
 import { useState, useRef } from 'react';
-import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Camera, Sparkles } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+
+// Conditional import for expo-camera (not available on web)
+let CameraView: any = null;
+let useCameraPermissions: any = null;
+if (Platform.OS !== 'web') {
+  const expoCamera = require('expo-camera');
+  CameraView = expoCamera.CameraView;
+  useCameraPermissions = expoCamera.useCameraPermissions;
+}
 
 interface ObjectFindMissionProps {
   onComplete: () => void;

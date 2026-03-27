@@ -22,10 +22,13 @@ if (Platform.OS !== 'web') {
 export function useAlarmNotifications() {
   const router = useRouter();
   const alarms = useAlarmStore((s) => s.alarms);
-  const settings = useAlarmStore((s) => s.settings);
   const { isPremium } = usePremium();
 
   useEffect(() => {
+    if (Platform.OS === 'web') {
+      return;
+    }
+
     // Request notification permissions
     const requestPermissions = async () => {
       const { status } = await Notifications.requestPermissionsAsync();

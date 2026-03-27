@@ -1,14 +1,46 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Platform } from 'react-native';
 import { useState } from 'react';
-import { CameraView, useCameraPermissions } from 'expo-camera';
 import { ScanBarcode } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
+
+// Conditional import for expo-camera (not available on web)
+let CameraView: any = null;
+let useCameraPermissions: any = null;
+if (Platform.OS !== 'web') {
+  const expoCamera = require('expo-camera');
+  CameraView = expoCamera.CameraView;
+  useCameraPermissions = expoCamera.useCameraPermissions;
+}
 
 interface BarcodeMissionProps {
   onComplete: () => void;
 }
 
 export function BarcodeMission({ onComplete }: BarcodeMissionProps) {
+  // On web, show a fallback message since camera access is limited
+  if (Platform.OS === 'web') {
+    return (
+      <View className="flex-1 items-center justify-center px-6">
+        <Text className="text-white text-lg">Camera Mission</Text>
+        <Text className="text-white text-2xl font-bold mt-4 mb-2">
+          Camera access limited on web
+        </Text>
+        <Text className="text-white/60 text-center mb-8">
+          Please use the mobile app for barcode scanning missions
+        </Text>
+        <Pressable
+          onPress={onComplete}
+          className="bg-white px-8 py-4 rounded-full active:scale-95"
+        >
+          <Text className="text-blue-600 text-lg font-semibold">
+            Skip Mission
+          </Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  // Mobile implementation
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState<boolean>(false);
 

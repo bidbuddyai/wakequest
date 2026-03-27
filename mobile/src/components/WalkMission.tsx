@@ -1,10 +1,16 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Platform } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Footprints, Check } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { Pedometer } from 'expo-sensors';
 import { DifficultyLevel } from '@/lib/types';
+
+// Conditional import for expo-sensors (not available on web)
+let Pedometer: any = null;
+if (Platform.OS !== 'web') {
+  const expoSensors = require('expo-sensors');
+  Pedometer = expoSensors.Pedometer;
+}
 
 interface WalkMissionProps {
   difficulty: DifficultyLevel;
@@ -18,6 +24,31 @@ const STEPS_REQUIRED = {
 };
 
 export function WalkMission({ difficulty, onComplete }: WalkMissionProps) {
+  // On web, show a fallback message since sensor access is limited
+  if (Platform.OS === 'web') {
+    return (
+      <View className="flex-1 items-center justify-center px-6 bg-gradient-to-b from-green-900 to-blue-900">
+        <Footprints size={64} color="white" />
+        <Text className="text-white text-lg">Walk Mission</Text>
+        <Text className="text-white text-2xl font-bold mt-4 mb-2">
+          Sensor access limited on web
+        </Text>
+        <Text className="text-white/60 text-center mb-8">
+          Please use the mobile app for walk missions
+        </Text>
+        <Pressable
+          onPress={onComplete}
+          style={({ pressed }) => ({
+            transform: [{ scale: pressed ? 0.95 : 1 }]
+          })}
+          className="bg-white px-8 py-4 rounded-full"
+        >
+          <Text className="text-green-600 text-lg font-semibold">Continue</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
   const [currentSteps, setCurrentSteps] = useState<number>(0);
   const [isPedometerAvailable, setIsPedometerAvailable] = useState<boolean>(false);
   const [subscription, setSubscription] = useState<any>(null);
@@ -44,16 +75,32 @@ export function WalkMission({ difficulty, onComplete }: WalkMissionProps) {
   }, [currentSteps]);
 
   const checkPedometerAvailability = async () => {
-    const isAvailable = await Pedometer.isAvailableAsync();
-    setIsPedometerAvailable(isAvailable);
+    if (!Pedometer) {
+      // This shouldn't happen due to the web check above, but just in case
+      setIsPedometerAvailable(false);
+      return;
+    }
+    
+    try {
+      const isAvailable = await Pedometer.isAvailableAsync();
+      setIsPedometerAvailable(isAvailable);
 
-    if (isAvailable) {
-      startCounting();
+      if (isAvailable) {
+        startCounting();
+      }
+    } catch (error) {
+      console.error('Failed to check pedometer availability:', error);
+      setIsPedometerAvailable(false);
     }
   };
 
   const startCounting = () => {
-    const sub = Pedometer.watchStepCount((result) => {
+    if (!Pedometer) {
+      // This shouldn't happen due to the web check above, but just in case
+      return;
+    }
+    
+    const sub = Pedometer.watchStepCount((result: { steps: number }) => {
       setCurrentSteps((prev) => prev + result.steps);
       if (result.steps > 0) {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

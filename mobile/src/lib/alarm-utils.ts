@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 import dayjs from 'dayjs';
 import { Alarm } from './types';
 
@@ -94,6 +95,7 @@ export function formatRepeatDays(days: number[]): string {
 }
 
 export async function scheduleAlarmNotification(alarm: Alarm): Promise<string | null> {
+  if (Platform.OS === 'web') return null;
   const nextTime = getNextAlarmTime(alarm);
   if (!nextTime) return null;
 
@@ -120,6 +122,7 @@ export async function scheduleAlarmNotification(alarm: Alarm): Promise<string | 
 }
 
 export async function scheduleReminderNotifications(alarm: Alarm, isPremium: boolean): Promise<void> {
+  if (Platform.OS === 'web') return;
   if (!isPremium) return;
 
   const nextTime = getNextAlarmTime(alarm);
@@ -230,6 +233,7 @@ export async function cancelSingleAlarmOccurrence(alarmId: string, alarmTime: st
 }
 
 export async function scheduleFollowUpNotification(alarmId: string, delay: number): Promise<string | null> {
+  if (Platform.OS === 'web') return null;
   try {
     const followUpTime = dayjs().add(delay, 'minute').toDate();
 
@@ -336,6 +340,7 @@ export function getMemorySequenceLength(difficulty: 'easy' | 'medium' | 'hard'):
 }
 
 export async function scheduleSnooze(alarmId: string, snoozeDuration: number): Promise<string | null> {
+  if (Platform.OS === 'web') return null;
   try {
     const snoozeTime = dayjs().add(snoozeDuration, 'minute').toDate();
 

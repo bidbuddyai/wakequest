@@ -1,14 +1,46 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Platform } from 'react-native';
 import { useState } from 'react';
-import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Camera } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
+
+// Conditional import for expo-camera (not available on web)
+let CameraView: any = null;
+let useCameraPermissions: any = null;
+if (Platform.OS !== 'web') {
+  const expoCamera = require('expo-camera');
+  CameraView = expoCamera.CameraView;
+  useCameraPermissions = expoCamera.useCameraPermissions;
+}
 
 interface PhotoMissionProps {
   onComplete: () => void;
 }
 
 export function PhotoMission({ onComplete }: PhotoMissionProps) {
+  // On web, show a fallback message since camera access is limited
+  if (Platform.OS === 'web') {
+    return (
+      <View className="flex-1 items-center justify-center px-6">
+        <Text className="text-white text-lg">Photo Mission</Text>
+        <Text className="text-white text-2xl font-bold mt-4 mb-2">
+          Camera access limited on web
+        </Text>
+        <Text className="text-white/60 text-center mb-8">
+          Please use the mobile app for photo missions
+        </Text>
+        <Pressable
+          onPress={onComplete}
+          className="bg-white px-8 py-4 rounded-full active:scale-95"
+        >
+          <Text className="text-blue-600 text-lg font-semibold">
+            Skip Mission
+          </Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  // Mobile implementation
   const [permission, requestPermission] = useCameraPermissions();
   const [photoTaken, setPhotoTaken] = useState<boolean>(false);
 
@@ -78,6 +110,9 @@ export function PhotoMission({ onComplete }: PhotoMissionProps) {
                 {photoTaken && <Text className="text-white text-3xl">✓</Text>}
               </View>
             </Pressable>
+            <Text className="text-white/80 text-sm mt-3">
+              Tap to capture
+            </Text>
           </View>
         </View>
       </CameraView>
