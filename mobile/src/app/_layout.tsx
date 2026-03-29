@@ -6,13 +6,14 @@ import { useColorScheme } from '@/lib/useColorScheme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useThemeStore, useTheme } from '@/lib/theme';
 import { useColorScheme as useNativeWindColorScheme } from 'nativewind';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: 'onboarding',
 };
 
@@ -25,18 +26,23 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
   const segments = useSegments();
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
+  const [initError, setInitError] = useState<string | null>(null);
   const loadThemeMode = useThemeStore((s) => s.loadThemeMode);
   const { theme, themeMode } = useTheme();
   const { setColorScheme } = useNativeWindColorScheme();
 
   useEffect(() => {
-    async function checkOnboarding() {
+    async function initializeApp() {
       try {
-        console.log('🔍 Checking onboarding status...');
+        console.log('🔍 Starting app initialization...');
+        
         // Load theme preference
+        console.log('🎨 Loading theme...');
         await loadThemeMode();
         console.log('✅ Theme loaded');
 
+        // Check onboarding status
+        console.log('📋 Checking onboarding...');
         const completed = await AsyncStorage.getItem('onboarding_completed');
         console.log('📋 Onboarding completed:', completed);
         console.log('📍 Current segments:', segments);
@@ -50,28 +56,45 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
           router.replace('/(tabs)');
         }
 
-        console.log('✅ Setting ready to true');
+        console.log('✅ App initialization complete');
         setIsReady(true);
         await SplashScreen.hideAsync();
-        console.log('✅ Splash screen hidden');
       } catch (error) {
-        console.error('❌ Error checking onboarding:', error);
+        console.error('❌ Error during initialization:', error);
+        setInitError(error instanceof Error ? error.message : String(error));
         setIsReady(true);
         await SplashScreen.hideAsync();
       }
     }
 
-    checkOnboarding();
+    initializeApp();
   }, []);
 
   // Update NativeWind color scheme when theme changes
   useEffect(() => {
     console.log('🎨 Setting NativeWind color scheme to:', theme);
-    setColorScheme(theme as 'light' | 'dark');
+    try {
+      setColorScheme(theme as 'light' | 'dark');
+    } catch (error) {
+      console.error('❌ Error setting color scheme:', error);
+    }
   }, [theme, setColorScheme]);
 
   if (!isReady) {
     return null;
+  }
+
+  if (initError) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#0A0E27', padding: 20, justifyContent: 'center' }}>
+        <Text style={{ color: '#FF6B35', fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
+          App Error
+        </Text>
+        <Text style={{ color: 'white', fontSize: 14 }}>
+          {initError}
+        </Text>
+      </View>
+    );
   }
 
   console.log('🎨 Current theme:', theme, 'ThemeMode:', themeMode);
@@ -92,19 +115,19 @@ function RootLayoutNav({ colorScheme }: { colorScheme: 'light' | 'dark' | null |
   );
 }
 
-
-
 export default function RootLayout() {
   const { theme } = useTheme();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <KeyboardProvider>
-          <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
-          <RootLayoutNav colorScheme={theme} />
-        </KeyboardProvider>
-      </GestureHandlerRootView>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <KeyboardProvider>
+            <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+            <RootLayoutNav colorScheme={theme} />
+          </KeyboardProvider>
+        </GestureHandlerRootView>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
