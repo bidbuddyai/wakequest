@@ -132,15 +132,19 @@ export const useAlarmStore = create<AlarmStore>((set, get) => ({
   },
 }));
 
-// Configure notifications
+// Configure notifications (wrapped in try-catch for safety)
 if (Platform.OS !== 'web') {
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: false,
-      shouldShowBanner: true,
-      shouldShowList: true,
-    }),
-  });
+  try {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+  } catch (error) {
+    console.error('Failed to set notification handler:', error);
+  }
 }
