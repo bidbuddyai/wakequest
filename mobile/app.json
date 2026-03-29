@@ -3,18 +3,13 @@
     "name": "Wakie Wakey",
     "slug": "wakequest-alarms",
     "scheme": "vibecode",
-    "version": "1.0.3",
-    "orientation": "portrait",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "cli": {
-      "appVersionSource": "remote"
-    },
+"version": "1.0.3",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.vibecode.wakequest.trw402",
-      "buildNumber": "3",
+      "buildNumber": "5",
       "infoPlist": {
+        "CFBundleDisplayName": "Wakie Wakey",
         "NSCameraUsageDescription": "WakeQuest uses the camera to capture new photos inside the app for your projects.",
         "NSMicrophoneUsageDescription": "WakeQuest uses the microphone to record audio tracks that the app attaches to your creations.",
         "NSLocationWhenInUseUsageDescription": "WakeQuest uses your location to show nearby content and services while you use the app.",
@@ -27,7 +22,7 @@
     "android": {
       "edgeToEdgeEnabled": true,
       "package": "com.wakequest.alarms",
-      "versionCode": 2,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./icon.png",
         "backgroundColor": "#ffffff"
