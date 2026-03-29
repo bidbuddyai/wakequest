@@ -3,7 +3,7 @@
     "name": "Wakie Wakey",
     "slug": "wakequest-alarms",
     "scheme": "vibecode",
-"version": "1.0.3",
+    "version": "1.0.3",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.vibecode.wakequest.trw402",
@@ -15,8 +15,10 @@
         "NSLocationWhenInUseUsageDescription": "WakeQuest uses your location to show nearby content and services while you use the app.",
         "NSMotionUsageDescription": "WakeQuest uses motion data to run movement-based features you enable in the app.",
         "UIBackgroundModes": [
+          "remote-notification",
           "remote-notification"
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
