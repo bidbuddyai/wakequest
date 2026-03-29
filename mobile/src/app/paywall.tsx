@@ -155,7 +155,7 @@ export default function PaywallScreen() {
               </LinearGradient>
             </View>
             <Text className="text-4xl font-bold text-white mb-2">
-              WakeQuest Premium
+              Wakie Wakey Premium
             </Text>
             <Text className="text-lg text-gray-400 text-center px-6">
               Start your 7-day free trial
@@ -231,19 +231,25 @@ export default function PaywallScreen() {
           </View>
         </View>
 
-        {/* Pricing Card */}
-        <View className="px-6 mb-6">
-          <View
-            className="rounded-2xl p-5 border-2 border-[#FF6B35]"
-            style={{ backgroundColor: "#1F2847" }}
-          >
-            <View className="items-center">
-              <Text className="text-white font-bold text-2xl mb-1">
-                7-day free trial
-              </Text>
-              <Text className="text-gray-300 text-base">
-                Then {monthlyPrice}/month
-              </Text>
+        {/* Subscription Details */}
+        <View className="px-6 mb-4">
+          <View className="bg-[#151B3B] rounded-2xl p-5">
+            <Text className="text-white font-bold text-lg mb-3 text-center">
+              Subscription Details
+            </Text>
+            <View className="space-y-3">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-gray-400 text-sm">Title</Text>
+                <Text className="text-white text-sm font-medium">WakeQuest Premium Monthly</Text>
+              </View>
+              <View className="flex-row justify-between items-center">
+                <Text className="text-gray-400 text-sm">Length</Text>
+                <Text className="text-white text-sm font-medium">Monthly (auto-renewing)</Text>
+              </View>
+              <View className="flex-row justify-between items-center">
+                <Text className="text-gray-400 text-sm">Price</Text>
+                <Text className="text-white text-sm font-medium">{monthlyPrice}/month</Text>
+              </View>
             </View>
           </View>
         </View>
